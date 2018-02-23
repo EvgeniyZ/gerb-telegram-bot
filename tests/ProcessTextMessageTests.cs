@@ -1,14 +1,18 @@
 using System;
+using Gerb.Telegram.Bot.DecisionMakers;
 using Xunit;
 
-namespace tests
+namespace Gerb.Unit.Tests
 {
-    public class UnitTest1
+    public class ProcessTextMessageTests
     {
         [Fact]
-        public void Test1()
+        public void Should_Forbid_Messages()
         {
-
+            var expected = "шоколад";
+            var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
+            var isAllowed = stomachUclerDietDecisionMaker.IsAllow(expected);
+            Assert.False(isAllowed);
         }
     }
 }
