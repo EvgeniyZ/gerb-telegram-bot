@@ -15,12 +15,23 @@ namespace Gerb.Unit.Tests
         [InlineData("rye bread")]
         [InlineData("ice cream")]
         [InlineData("chocolate")]
-        public void Should_Not_Allow_Food(string input)
+        public void Should_Not_Allow_Food(string food)
         {
             var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
-            var isAllowed = stomachUclerDietDecisionMaker.IsAllowed(input);
+            var isAllowed = stomachUclerDietDecisionMaker.IsAllowed(food);
 
             Assert.False(isAllowed);
+        }
+
+        [Theory]
+        [InlineData("банан")]
+        [InlineData("бананы")]
+        public void Should_Allow_Food(string food) 
+        {
+            var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
+            var isAllowed = stomachUclerDietDecisionMaker.IsAllowed(food);
+
+            Assert.True(isAllowed);
         }
     }
 }

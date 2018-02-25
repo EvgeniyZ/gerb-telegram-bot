@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Gerb.Telegram.Bot.DecisionMakers;
 
 namespace Gerb.Telegram.Bot.MessageProcessors
 {
     public class TextMessageProcessor
     {
+        private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
         private readonly StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker;
 
         public TextMessageProcessor(StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker)
@@ -21,12 +23,18 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 return "Пустое сообщение";
             }
             var words = message.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            var isAllowedAnswers = new List<bool>(words.Length);
+            var answers = new List<bool>(words.Length);
             foreach (var word in words)
             {
-                isAllowedAnswers.Add(stomachUclerDietDesicionMaker.IsAllowed(word));
+                if (string.IsNullOrEmpty(word))
+                {
+                    answers.Add(true);
+                    continue;
+                }
+                var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
+                answers.Add(stomachUclerDietDesicionMaker.IsAllowed(formattedWord));
             }
-            return isAllowedAnswers.Any(x => x == false) ? "можно" : "нет";
+            return answers.All(x => x == true) ? "можно" : "нет";
         }
     }
 }

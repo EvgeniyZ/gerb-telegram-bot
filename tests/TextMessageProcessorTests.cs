@@ -7,13 +7,25 @@ namespace Gerb.Unit.Tests
 {
     public class TextMessageProcessorTests
     {
-        [Fact]
-        public void Should_Call_DietDecisionMaker_Return_Result() 
+        [Theory]
+        [InlineData("Можно ли мне есть шоколад?")]
+        [InlineData("Can I eat a chocolate?")]
+        public void Should_Call_DietDecisionMaker_Return_Not_Allowed(string message)
         {
-            var message = "Можно ли мне есть шоколад?";
             var textMessageProcessor = new TextMessageProcessor(new StomachUclerDietDesicionMaker());
             var result = textMessageProcessor.Process(message);
             Assert.Equal("нет", result);
+        }
+
+        [Theory]
+        [InlineData("Можно ли мне есть банан?")]
+        [InlineData("банан")]
+        [InlineData("бананы")]
+        public void Should_Call_DietDecisionMaker_Return_Allowed(string message)
+        {
+            var textMessageProcessor = new TextMessageProcessor(new StomachUclerDietDesicionMaker());
+            var result = textMessageProcessor.Process(message);
+            Assert.Equal("можно", result);
         }
     }
 }

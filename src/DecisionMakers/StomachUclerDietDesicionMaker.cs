@@ -12,7 +12,7 @@ namespace Gerb.Telegram.Bot.DecisionMakers
             {
                 return true;
             }
-            return !_forbiddenKeywords.Contains(food.ToLower());
+            return !_forbiddenKeywords.Contains(food);
         }
     }
 }
