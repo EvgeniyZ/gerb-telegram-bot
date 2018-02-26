@@ -24,18 +24,21 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 return "Пустое сообщение";
             }
             var words = Regex.Replace(message, _specialCharacters, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            var answers = new List<bool>(words.Length);
+            var forbiddenAnswers = new List<Tuple<bool, string>>(words.Length);
             foreach (var word in words)
             {
                 var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
                 if (string.IsNullOrEmpty(formattedWord))
                 {
-                    answers.Add(true);
                     continue;
                 }
-                answers.Add(stomachUclerDietDesicionMaker.IsAllowed(formattedWord));
+                var (isAllowed, details) = stomachUclerDietDesicionMaker.IsAllowed(formattedWord);
+                if (!isAllowed)
+                {
+                    forbiddenAnswers.Add(Tuple.Create(isAllowed, details));
+                }
             }
-            return answers.All(x => x == true) ? "можно" : "нет";
+            return forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Item2)) : "можно";
         }
     }
 }

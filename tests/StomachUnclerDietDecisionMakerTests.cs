@@ -11,16 +11,17 @@ namespace Gerb.Unit.Tests
         [InlineData("мороженое")]
         [InlineData("ржаной хлеб")]
         [InlineData("свежий хлеб")]
-        [InlineData("fresh bread")]
-        [InlineData("rye bread")]
-        [InlineData("ice cream")]
-        [InlineData("chocolate")]
+        // [InlineData("fresh bread")]
+        // [InlineData("rye bread")]
+        // [InlineData("ice cream")]
+        // [InlineData("chocolate")]
         public void Should_Not_Allow_Food(string food)
         {
             var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
-            var isAllowed = stomachUclerDietDecisionMaker.IsAllowed(food);
+            var (isAllowed, details) = stomachUclerDietDecisionMaker.IsAllowed(food);
 
             Assert.False(isAllowed);
+            Assert.NotEmpty(details);
         }
 
         [Theory]
@@ -29,9 +30,10 @@ namespace Gerb.Unit.Tests
         public void Should_Allow_Food(string food) 
         {
             var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
-            var isAllowed = stomachUclerDietDecisionMaker.IsAllowed(food);
+            var (isAllowed, details) = stomachUclerDietDecisionMaker.IsAllowed(food);
 
             Assert.True(isAllowed);
+            Assert.Empty(details);
         }
     }
 }

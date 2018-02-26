@@ -4,15 +4,21 @@ namespace Gerb.Telegram.Bot.DecisionMakers
 {
     public class StomachUclerDietDesicionMaker
     {
-        private readonly List<string> _forbiddenKeywords = new List<string> { "шоколад", "мороженое", "ржаной хлеб", "свежий хлеб", "chocolate", "ice cream", "rye bread", "fresh bread" };
-
-        public bool IsAllowed(string food)
+        private static readonly Dictionary<string, string> _forbiddenFoodsDictionary = new Dictionary<string, string>
         {
-            if (string.IsNullOrEmpty(food))
+            { "шоколад", "Шоколад исключен из диеты. Из сладкого можно сахар, мёд, некислое варенье, зефир, пастила." },
+            { "мороженое", "Мороженое исключено из диеты. Из сладкого можно сахар, мёд, некислое варенье, зефир, пастила." },
+            { "ржаной хлеб", "Ржаной хлеб исключен из диеты." },
+            { "свежий хлеб", "Свежий хлеб исключен из диеты" }
+        };
+
+        public (bool, string) IsAllowed(string food)
+        {
+            if (_forbiddenFoodsDictionary.ContainsKey(food))
             {
-                return true;
+                return (false, _forbiddenFoodsDictionary[food]);
             }
-            return !_forbiddenKeywords.Contains(food);
+            return (true, "");
         }
     }
 }
