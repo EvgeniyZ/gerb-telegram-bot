@@ -9,6 +9,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
     public class TextMessageProcessor
     {
         private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
+        private readonly string _specialCharacters = "[,.?!]";
         private readonly StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker;
 
         public TextMessageProcessor(StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker)
@@ -22,16 +23,16 @@ namespace Gerb.Telegram.Bot.MessageProcessors
             {
                 return "Пустое сообщение";
             }
-            var words = message.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            var words = Regex.Replace(message, _specialCharacters, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
             var answers = new List<bool>(words.Length);
             foreach (var word in words)
             {
-                if (string.IsNullOrEmpty(word))
+                var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
+                if (string.IsNullOrEmpty(formattedWord))
                 {
                     answers.Add(true);
                     continue;
                 }
-                var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
                 answers.Add(stomachUclerDietDesicionMaker.IsAllowed(formattedWord));
             }
             return answers.All(x => x == true) ? "можно" : "нет";

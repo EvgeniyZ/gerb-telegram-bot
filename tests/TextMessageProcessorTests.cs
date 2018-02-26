@@ -9,7 +9,8 @@ namespace Gerb.Unit.Tests
     {
         [Theory]
         [InlineData("Можно ли мне есть шоколад?")]
-        [InlineData("Can I eat a chocolate?")]
+        [InlineData("Можно ли мне есть,например,шоколад?")]
+        //[InlineData("Can I eat a chocolate?")]
         public void Should_Call_DietDecisionMaker_Return_Not_Allowed(string message)
         {
             var textMessageProcessor = new TextMessageProcessor(new StomachUclerDietDesicionMaker());
