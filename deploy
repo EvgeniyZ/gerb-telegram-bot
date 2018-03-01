@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-heroku login
-heroku container:login
+docker build -t gerb-telegram-bot ./src
 docker tag gerb-telegram-bot registry.heroku.com/gerb-telegram-bot/web
+heroku container:login
 docker push registry.heroku.com/gerb-telegram-bot/web
