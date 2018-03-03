@@ -17,6 +17,8 @@ namespace Gerb.Unit.Tests
 
             Assert.NotNull(overview);
             Assert.True(!string.IsNullOrEmpty(overview.Name));
+            Assert.True(!string.IsNullOrEmpty(overview.AllowedDescription));
+            Assert.True(!string.IsNullOrEmpty(overview.ForbiddenDescription));
         }
     }
 }
