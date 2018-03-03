@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gerb.Telegram.Bot.DecisionMakers;
+using Gerb.Telegram.Bot.Entities;
 
 namespace Gerb.Telegram.Bot.MessageProcessors
 {
@@ -10,9 +11,9 @@ namespace Gerb.Telegram.Bot.MessageProcessors
     {
         private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
         private readonly string _specialCharacters = "[,.?!]";
-        private readonly StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker;
+        private readonly StomachUclerDietDecisionMaker stomachUclerDietDesicionMaker;
 
-        public TextMessageProcessor(StomachUclerDietDesicionMaker stomachUclerDietDesicionMaker)
+        public TextMessageProcessor(StomachUclerDietDecisionMaker stomachUclerDietDesicionMaker)
         {
             this.stomachUclerDietDesicionMaker = stomachUclerDietDesicionMaker;
         }
@@ -24,7 +25,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 return "Пустое сообщение";
             }
             var words = Regex.Replace(message, _specialCharacters, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            var forbiddenAnswers = new List<Tuple<bool, string>>(words.Length);
+            var forbiddenAnswers = new List<DietAnswer>(words.Length);
             foreach (var word in words)
             {
                 var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
@@ -32,13 +33,13 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 {
                     continue;
                 }
-                var (isAllowed, details) = stomachUclerDietDesicionMaker.IsAllowed(formattedWord);
-                if (!isAllowed)
+                var dietAnswer = stomachUclerDietDesicionMaker.IsAllowed(formattedWord);
+                if (!dietAnswer.IsAllowed)
                 {
-                    forbiddenAnswers.Add(Tuple.Create(isAllowed, details));
+                    forbiddenAnswers.Add(dietAnswer);
                 }
             }
-            return forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Item2)) : "можно";
+            return forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Details)) : "можно";
         }
     }
 }

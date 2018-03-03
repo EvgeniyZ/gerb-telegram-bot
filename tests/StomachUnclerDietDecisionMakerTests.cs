@@ -1,5 +1,6 @@
 using System;
 using Gerb.Telegram.Bot.DecisionMakers;
+using Gerb.Telegram.Bot.Entities;
 using Xunit;
 
 namespace Gerb.Unit.Tests
@@ -19,11 +20,11 @@ namespace Gerb.Unit.Tests
         // [InlineData("chocolate")]
         public void Should_Not_Allow_Food(string food)
         {
-            var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
-            var (isAllowed, details) = stomachUclerDietDecisionMaker.IsAllowed(food);
+            var stomachUclerDietDecisionMaker = new StomachUclerDietDecisionMaker();
+            var dietAnswer = stomachUclerDietDecisionMaker.IsAllowed(food);
 
-            Assert.False(isAllowed);
-            Assert.NotEmpty(details);
+            Assert.False(dietAnswer.IsAllowed);
+            Assert.NotEmpty(dietAnswer.Details);
         }
 
         [Theory]
@@ -31,11 +32,11 @@ namespace Gerb.Unit.Tests
         [InlineData("бананы")]
         public void Should_Allow_Food(string food) 
         {
-            var stomachUclerDietDecisionMaker = new StomachUclerDietDesicionMaker();
-            var (isAllowed, details) = stomachUclerDietDecisionMaker.IsAllowed(food);
+            var stomachUclerDietDecisionMaker = new StomachUclerDietDecisionMaker();
+            var dietAnswer = stomachUclerDietDecisionMaker.IsAllowed(food);
 
-            Assert.True(isAllowed);
-            Assert.Empty(details);
+            Assert.True(dietAnswer.IsAllowed);
+            Assert.Empty(dietAnswer.Details);
         }
     }
 }

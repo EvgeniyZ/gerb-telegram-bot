@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
+using Gerb.Telegram.Bot.Entities;
 
 namespace Gerb.Telegram.Bot.DecisionMakers
 {
-    public class StomachUclerDietDesicionMaker
+    public class StomachUclerDietDecisionMaker
     {
         private static readonly Dictionary<string, string> _forbiddenFoodsDictionary = new Dictionary<string, string>
         {
@@ -15,13 +17,13 @@ namespace Gerb.Telegram.Bot.DecisionMakers
             { "сметана", "Следует ограничить употребление сметаны." },
         };
 
-        public (bool, string) IsAllowed(string food)
+        public DietAnswer IsAllowed(string food)
         {
             if (_forbiddenFoodsDictionary.ContainsKey(food))
             {
-                return (false, _forbiddenFoodsDictionary[food]);
+                return new DietAnswer(false, _forbiddenFoodsDictionary[food]);
             }
-            return (true, "");
+            return new DietAnswer(true, "");
         }
     }
 }
