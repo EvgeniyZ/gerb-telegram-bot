@@ -33,7 +33,7 @@ namespace Gerb.Telegram.Bot.Services
                 case MessageType.TextMessage:
                     var result = _textMessageProcessor.Process(message.Text);
                     await _botService.Client.SendTextMessageAsync(message.Chat.Id, result.Content, ParseMode.Markdown,
-                        false, false, update.Id, result.ReplyMarkup);
+                        false, false, message.MessageId, result.ReplyMarkup);
                     break;
                 case MessageType.PhotoMessage:
                     await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Изображение обработано.");

@@ -6,16 +6,6 @@ namespace Gerb.Telegram.Bot.DecisionMakers
 {
     public sealed class StomachUnclerDietOverview
     {
-        public DietOverview GetOverview(string name)
-        {
-            return new DietOverview
-            {
-                Name = name,
-                AllowedDescription = "Хлеб пшеничный вчерашней выпечки или подсушенный; сухой бисквит, печенье сухое. 1-2 раза в неделю хорошо выпеченные несдобные булочки, печеные пирожки с яблоками, отварным мясом или рыбой и яйцами, джемом, ватрушка с творогом.",
-                ForbiddenDescription = "Ржаной и любой свежий хлеб, изделия из сдобного и слоёного теста."
-            };
-        }
-
         public IEnumerable<DietOverview> GetOverviews() 
         {
             yield return new DietOverview
@@ -23,6 +13,12 @@ namespace Gerb.Telegram.Bot.DecisionMakers
                 Name = "ХЛЕБ И МУЧНЫЕ ИЗДЕЛИЯ",
                 AllowedDescription = "Хлеб пшеничный вчерашней выпечки или подсушенный; сухой бисквит, печенье сухое. 1-2 раза в неделю хорошо выпеченные несдобные булочки, печеные пирожки с яблоками, отварным мясом или рыбой и яйцами, джемом, ватрушка с творогом.",
                 ForbiddenDescription = "Ржаной и любой свежий хлеб, изделия из сдобного и слоёного теста."
+            };
+            yield return new DietOverview
+            {
+                Name = "РЫБА",
+                AllowedDescription = "Нежирные виды без кожи, куском или в виде котлетной массы; варится в воде или на пару.",
+                ForbiddenDescription = "Жирную, солёную рыбу, консервы."
             };
         }
     }

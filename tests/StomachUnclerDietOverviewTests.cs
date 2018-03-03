@@ -8,17 +8,19 @@ namespace Gerb.Unit.Tests
     public sealed class StomachUnclerDietOverviewTests
     {
         [Fact]
-        public void Should_Return_Overview_About_Section() 
+        public void Should_Return_Overviews()
         {
-            var section = "ХЛЕБ И МУЧНЫЕ ИЗДЕЛИЯ";
             var desicionMaker = new StomachUnclerDietOverview();
 
-            var overview = desicionMaker.GetOverview(section);
+            var overviews = desicionMaker.GetOverviews();
 
-            Assert.NotNull(overview);
-            Assert.True(!string.IsNullOrEmpty(overview.Name));
-            Assert.True(!string.IsNullOrEmpty(overview.AllowedDescription));
-            Assert.True(!string.IsNullOrEmpty(overview.ForbiddenDescription));
+            foreach (var overview in overviews)
+            {
+                Assert.NotNull(overview);
+                Assert.True(!string.IsNullOrEmpty(overview.Name));
+                Assert.True(!string.IsNullOrEmpty(overview.AllowedDescription));
+                Assert.True(!string.IsNullOrEmpty(overview.ForbiddenDescription));
+            }
         }
     }
 }

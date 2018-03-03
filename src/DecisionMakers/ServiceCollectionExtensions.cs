@@ -7,6 +7,7 @@ namespace Gerb.Telegram.Bot.DecisionMakers
         public static void AddDecisionMakers(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<StomachUclerDietDecisionMaker>();
+            serviceCollection.AddScoped<StomachUnclerDietOverview>();
         }
     }
 }

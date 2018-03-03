@@ -45,10 +45,10 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                         forbiddenAnswers.Add(dietAnswer);
                     }
                 }
-                var decisionMakerContent = forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Details)) : "можно";
+                var decisionMakerContent = forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Details)) : "Можно. Но лучше уточните в разделах диеты.";
                 return new TextProcessorResult(decisionMakerContent);
             }
-            var overviewContent = string.Join(".", $"*{overview.Name}*", overview.AllowedDescription, $"*Исключают из диеты:*{overview.ForbiddenDescription}");
+            var overviewContent = string.Join(".\n", overview.AllowedDescription, $"*Исключают из диеты:*{overview.ForbiddenDescription}");
             return new TextProcessorResult(overviewContent, new DietReplyMarkup
             {
                 keyboard = overviews.Select(x => new List<string> { x.Name }).ToList(),
