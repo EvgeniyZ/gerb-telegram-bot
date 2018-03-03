@@ -5,6 +5,6 @@ namespace Gerb.Telegram.Bot.Services
 {
     public interface IUpdateService
     {
-        Task EchoAsync(Update update);
+        Task Handle(Update update);
     }
 }

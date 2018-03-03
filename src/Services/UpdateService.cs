@@ -21,7 +21,7 @@ namespace Gerb.Telegram.Bot.Services
             _logger = logger;
         }
 
-        public async Task EchoAsync(Update update)
+        public async Task Handle(Update update)
         {
             if (update.Type != UpdateType.MessageUpdate)
             {
@@ -31,7 +31,9 @@ namespace Gerb.Telegram.Bot.Services
             switch (message.Type)
             {
                 case MessageType.TextMessage:
-                    await _botService.Client.SendTextMessageAsync(message.Chat.Id, _textMessageProcessor.Process(message.Text));
+                    var result = _textMessageProcessor.Process(message.Text);
+                    await _botService.Client.SendTextMessageAsync(message.Chat.Id, result.Content, ParseMode.Markdown,
+                        false, false, update.Id, result.ReplyMarkup);
                     break;
                 case MessageType.PhotoMessage:
                     await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Изображение обработано.");

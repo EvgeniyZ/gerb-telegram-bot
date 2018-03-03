@@ -19,7 +19,7 @@ namespace Gerb.Telegram.Bot.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Update update)
         {
-            await _updateService.EchoAsync(update);
+            await _updateService.Handle(update);
             return Ok();
         }
     }
