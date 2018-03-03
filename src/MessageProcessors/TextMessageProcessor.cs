@@ -55,7 +55,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                     one_time_keyboard = true
                 });
             }
-            var overviewContent = string.Join(".\n", overview.AllowedDescription, $"*Исключают из диеты:*{overview.ForbiddenDescription}");
+            var overviewContent = string.Join("\n", $"*Разрешается:\n*{overview.AllowedDescription}", $"*Исключают из диеты:\n*{overview.ForbiddenDescription}");
             return new TextProcessorResult(overviewContent);
         }
     }
