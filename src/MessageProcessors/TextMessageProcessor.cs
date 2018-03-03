@@ -45,16 +45,18 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                         forbiddenAnswers.Add(dietAnswer);
                     }
                 }
-                var decisionMakerContent = forbiddenAnswers.Any() ? string.Join(".", forbiddenAnswers.Select(x => x.Details)) : "Можно. Но лучше уточните в разделах диеты.";
-                return new TextProcessorResult(decisionMakerContent);
+                if (forbiddenAnswers.Any())
+                {
+                    return new TextProcessorResult(string.Join(".", forbiddenAnswers.Select(x => x.Details)));
+                }
+                return new TextProcessorResult("Можно. Но лучше уточните в разделах диеты.", new DietReplyMarkup
+                {
+                    keyboard = overviews.Select(x => new List<string> { x.Name }).ToList(),
+                    one_time_keyboard = true
+                });
             }
             var overviewContent = string.Join(".\n", overview.AllowedDescription, $"*Исключают из диеты:*{overview.ForbiddenDescription}");
-            return new TextProcessorResult(overviewContent, new DietReplyMarkup
-            {
-                keyboard = overviews.Select(x => new List<string> { x.Name }).ToList(),
-                one_time_keyboard = true,
-                selective = true
-            });
+            return new TextProcessorResult(overviewContent);
         }
     }
 }
