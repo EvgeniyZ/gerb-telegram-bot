@@ -7,8 +7,17 @@ using Xunit;
 
 namespace Gerb.Unit.Tests
 {
-    public class TextMessageProcessorTests
+    public class TextMessageProcessorTests : IDisposable
     {
+        private readonly DbContextOptions<StomachUnclerDietContext> _options;
+
+        public TextMessageProcessorTests()
+        {
+            _options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
+                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .Options;
+        }
+
         [Theory]
         [InlineData("Можно ли мне есть шоколад?")]
         [InlineData("Можно ли мне есть,например,шоколад?")]
@@ -17,15 +26,14 @@ namespace Gerb.Unit.Tests
         //[InlineData("Can I eat a chocolate?")]
         public async Task Should_Call_DietDecisionMaker_Forbid_Chocolate(string message)
         {
-            var options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
-                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
-                .Options;
-            using (var context = new StomachUnclerDietContext(options))
+            using (var context = new StomachUnclerDietContext(_options))
             {
+                ContextInitializer.Initialize(context);
                 var textMessageProcessor = new TextMessageProcessor(context);
                 var result = await textMessageProcessor.Process(message);
 
                 Assert.False(string.IsNullOrEmpty(result.Content));
+                Assert.NotEqual(TextMessageProcessor.Positive, result.Content);
             }
         }
 
@@ -36,15 +44,20 @@ namespace Gerb.Unit.Tests
         [InlineData("бананы")]
         public async Task Should_Call_DietDecisionMaker_Allow_Banana(string message)
         {
-            var options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
-                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
-                .Options;
-            using (var context = new StomachUnclerDietContext(options))
+            using (var context = new StomachUnclerDietContext(_options))
             {
+                ContextInitializer.Initialize(context);
                 var textMessageProcessor = new TextMessageProcessor(context);
                 var result = await textMessageProcessor.Process(message);
 
-                Assert.True(string.IsNullOrEmpty(result.Content));
+                Assert.Equal(TextMessageProcessor.Positive, result.Content);
+            }
+        }
+        public void Dispose()
+        {
+            using (var context = new StomachUnclerDietContext(_options))
+            {
+                context.Database.EnsureDeleted();
             }
         }
     }

@@ -6,6 +6,7 @@ using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Gerb.Telegram.Bot.Shared;
 
 namespace Gerb.Telegram.Bot.MessageProcessors
 {
@@ -14,6 +15,10 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
         private readonly string _specialCharacters = "[,.?!]";
         private readonly StomachUnclerDietContext _dietContext;
+        public const string Empty = "Пустое сообщение";
+        public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
+        private const string Allowed = "Разрешается";
+        private const string Forbidden = "Исключают из диеты";
 
         public TextMessageProcessor(StomachUnclerDietContext dietContext)
         {
@@ -24,41 +29,36 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         {
             if (message.Length == 0)
             {
-                return new TextProcessorResult("Пустое сообщение");
+                return new TextProcessorResult(Empty);
             }
             var sections = await _dietContext.Sections.ToListAsync();
-            var section = sections.FirstOrDefault(x => x.Title == message);
+            var section = sections.FirstOrDefault(x => x.Name == message);
             if (section is null)
             {
                 var words = Regex.Replace(message, _specialCharacters, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                var forbiddenAnswers = new List<DietAnswer>(words.Length);
-                var restrictions = await _dietContext.Restrictions.ToListAsync();
-                foreach (var word in words)
+                var formattedWords = words.Select(x => Regex.Replace(x, _invalidRussianCharacters, "").Trim().ToLower()).Where(x => !string.IsNullOrEmpty(x));
+                var forbiddenContent = GetForbiddenContent(formattedWords, sections.SelectMany(x => x.Restrictions));
+                if (string.IsNullOrEmpty(forbiddenContent))
                 {
-                    var formattedWord = Regex.Replace(word, _invalidRussianCharacters, "").Trim().ToLower();
-                    if (string.IsNullOrEmpty(formattedWord))
+                    return new TextProcessorResult(Positive, new DietReplyMarkup
                     {
-                        continue;
-                    }
-                    var restriction = restrictions.FirstOrDefault(x => x.Food.Name == formattedWord);
-                    if (restriction is null)
-                    {
-                        continue;
-                    }
-                    forbiddenAnswers.Add(new DietAnswer(false, restriction.Group.ForbiddenDescription));
+                        keyboard = sections.Select(x => new List<string> { x.Name }).ToList(),
+                        one_time_keyboard = true
+                    });
                 }
-                if (forbiddenAnswers.Any())
-                {
-                    return new TextProcessorResult(string.Join(".", forbiddenAnswers.Select(x => x.Details)));
-                }
-                return new TextProcessorResult("Можно. Но лучше уточните в разделах диеты.", new DietReplyMarkup
-                {
-                    keyboard = sections.Select(x => new List<string> { x.Title }).ToList(),
-                    one_time_keyboard = true
-                });
+                return new TextProcessorResult(forbiddenContent);
             }
-            var content = string.Join("\n", $"*Разрешается:\n*{section.AllowedDescription}", $"*Исключают из диеты:\n*{section.ForbiddenDescription}");
+            var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}", $"*{Forbidden}:\n*{section.ForbiddenDescription}");
             return new TextProcessorResult(content);
+        }
+
+        public string GetForbiddenContent(IEnumerable<string> words, IEnumerable<Restriction> restrictions)
+        {
+            var forbiddenDescriptions = restrictions
+                .Where(x => words.Any(word => x.Food.Name.Contains(word, StringComparison.OrdinalIgnoreCase)))
+                .Select(x => x.Section.ForbiddenDescription);
+
+            return forbiddenDescriptions.Any() ? string.Join(".", forbiddenDescriptions) : "";
         }
     }
 }

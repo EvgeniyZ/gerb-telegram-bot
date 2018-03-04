@@ -17,14 +17,34 @@ namespace Gerb.Telegram.Bot.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Food>().ToTable("food")
-                .HasKey(x => x.Id);
-            modelBuilder.Entity<Recommendation>().ToTable("recommendation")
-                .HasKey(x => x.Id);
-            modelBuilder.Entity<Restriction>().ToTable("restriction")
-                .HasKey(x => x.Id);
-            modelBuilder.Entity<Section>().ToTable("section")
-                .HasKey(x => x.Id);
+            modelBuilder.Entity<Food>(entity =>
+            {
+                entity.ToTable("food");
+                entity.HasKey(x => x.Id);
+                entity.HasIndex(x => x.Name).IsUnique();
+            });
+            modelBuilder.Entity<Recommendation>(entity =>
+            {
+                entity.ToTable("recommendation");
+                entity.HasKey(x => x.Id);
+                entity.HasOne(x => x.Food);
+                entity.HasOne(x => x.Section);
+            });
+            modelBuilder.Entity<Restriction>(entity =>
+            {
+                entity.ToTable("restriction");
+                entity.HasKey(x => x.Id);
+                entity.HasOne(x => x.Food);
+                entity.HasOne(x => x.Section);
+            });
+            modelBuilder.Entity<Section>(entity =>
+            {
+                entity.ToTable("section");
+                entity.HasKey(x => x.Id);
+                entity.HasIndex(x => x.Name).IsUnique();
+                entity.HasMany(x => x.Recomendations);
+                entity.HasMany(x => x.Restrictions);
+            });
         }
     }
 }
