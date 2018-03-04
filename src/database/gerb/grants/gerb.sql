@@ -1,4 +1,0 @@
-GRANT USAGE ON SCHEMA gerb TO gerb;
-GRANT ALL ON ALL TABLES IN SCHEMA gerb TO gerb;
-
-INSERT INTO ops (op) VALUES ('grants gerb');

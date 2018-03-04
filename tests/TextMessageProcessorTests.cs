@@ -1,6 +1,8 @@
 using System;
-using Gerb.Telegram.Bot.DecisionMakers;
+using System.Threading.Tasks;
+using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.MessageProcessors;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Gerb.Unit.Tests
@@ -13,12 +15,18 @@ namespace Gerb.Unit.Tests
         [InlineData("шоколад?")]
         [InlineData("Шоколад")]
         //[InlineData("Can I eat a chocolate?")]
-        public void Should_Call_DietDecisionMaker_Forbid_Chocolate(string message)
+        public async Task Should_Call_DietDecisionMaker_Forbid_Chocolate(string message)
         {
-            var textMessageProcessor = new TextMessageProcessor(new StomachUnclerDietOverview(), new StomachUclerDietDecisionMaker());
-            var result = textMessageProcessor.Process(message);
+            var options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
+                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .Options;
+            using (var context = new StomachUnclerDietContext(options))
+            {
+                var textMessageProcessor = new TextMessageProcessor(context);
+                var result = await textMessageProcessor.Process(message);
 
-            Assert.False(string.IsNullOrEmpty(result.Content));
+                Assert.False(string.IsNullOrEmpty(result.Content));
+            }
         }
 
         [Theory]
@@ -26,12 +34,18 @@ namespace Gerb.Unit.Tests
         [InlineData("банан")]
         [InlineData("Банан")]
         [InlineData("бананы")]
-        public void Should_Call_DietDecisionMaker_Allow_Banana(string message)
+        public async Task Should_Call_DietDecisionMaker_Allow_Banana(string message)
         {
-            var textMessageProcessor = new TextMessageProcessor(new StomachUnclerDietOverview(), new StomachUclerDietDecisionMaker());
-            var result = textMessageProcessor.Process(message);
+            var options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
+                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .Options;
+            using (var context = new StomachUnclerDietContext(options))
+            {
+                var textMessageProcessor = new TextMessageProcessor(context);
+                var result = await textMessageProcessor.Process(message);
 
-            Assert.False(string.IsNullOrEmpty(result.Content));
+                Assert.True(string.IsNullOrEmpty(result.Content));
+            }
         }
     }
 }

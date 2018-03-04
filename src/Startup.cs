@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Gerb.Telegram.Bot.Services;
-using Gerb.Telegram.Bot.DecisionMakers;
+using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.MessageProcessors;
 
 namespace Gerb.Telegram.Bot
@@ -22,7 +22,7 @@ namespace Gerb.Telegram.Bot
 
             services.AddScoped<IUpdateService, UpdateService>();
             services.AddSingleton<IBotService, BotService>();
-            services.AddDecisionMakers();
+            services.AddInfrastructure("");
             services.AddMessageProcessors();
 
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));

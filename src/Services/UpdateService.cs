@@ -31,7 +31,7 @@ namespace Gerb.Telegram.Bot.Services
             switch (message.Type)
             {
                 case MessageType.TextMessage:
-                    var result = _textMessageProcessor.Process(message.Text);
+                    var result = await _textMessageProcessor.Process(message.Text);
                     await _botService.Client.SendTextMessageAsync(message.Chat.Id, result.Content, ParseMode.Markdown,
                         false, false, message.MessageId, result.ReplyMarkup);
                     break;
