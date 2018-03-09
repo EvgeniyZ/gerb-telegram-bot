@@ -8,6 +8,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
     {
         public static void Initialize(StomachUnclerDietContext context)
         {
+            context.Database.EnsureCreated();
             if (context.Sections.Any() || context.Recomendations.Any())
             {
                 return;
