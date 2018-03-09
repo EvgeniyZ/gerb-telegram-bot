@@ -42,7 +42,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
                 entity.ToTable("section");
                 entity.HasKey(x => x.Id);
                 entity.HasIndex(x => x.Name).IsUnique();
-                entity.HasMany(x => x.Recomendations);
+                entity.HasMany(x => x.Recommendations);
                 entity.HasMany(x => x.Restrictions);
             });
         }

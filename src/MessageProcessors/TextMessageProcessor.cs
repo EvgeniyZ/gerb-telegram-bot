@@ -15,10 +15,10 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
         private readonly string _specialCharacters = "[,.?!]";
         private readonly StomachUnclerDietContext _dietContext;
-        public const string Empty = "Пустое сообщение";
-        public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
         private const string Allowed = "Разрешается";
         private const string Forbidden = "Исключают из диеты";
+        private const string Empty = "Пустое сообщение";
+        public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
 
         public TextMessageProcessor(StomachUnclerDietContext dietContext)
         {
@@ -35,9 +35,8 @@ namespace Gerb.Telegram.Bot.MessageProcessors
             var section = sections.FirstOrDefault(x => x.Name == message);
             if (section is null)
             {
-                var words = Regex.Replace(message, _specialCharacters, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                var formattedWords = words.Select(x => Regex.Replace(x, _invalidRussianCharacters, "").Trim().ToLower()).Where(x => !string.IsNullOrEmpty(x));
-                var forbiddenContent = GetForbiddenContent(formattedWords, sections.SelectMany(x => x.Restrictions));
+                var words = GetWords(message);
+                var forbiddenContent = GetForbiddenContent(words, sections.SelectMany(x => x.Restrictions));
                 if (string.IsNullOrEmpty(forbiddenContent))
                 {
                     return new TextProcessorResult(Positive, new DietReplyMarkup
@@ -48,11 +47,24 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 }
                 return new TextProcessorResult(forbiddenContent);
             }
-            var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}", $"*{Forbidden}:\n*{section.ForbiddenDescription}");
+            var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}",
+                $"*{Forbidden}:\n*{section.ForbiddenDescription}");
             return new TextProcessorResult(content);
         }
 
-        public string GetForbiddenContent(IEnumerable<string> words, IEnumerable<Restriction> restrictions)
+        private List<string> GetWords(string message)
+        {
+            var words = Regex.Replace(message, _specialCharacters, " ")
+                .Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            return words
+                .Select(x => Regex.Replace(x, _invalidRussianCharacters, "")
+                                  .Trim()
+                                  .ToLower())
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToList();
+        }
+
+        private string GetForbiddenContent(IEnumerable<string> words, IEnumerable<Restriction> restrictions)
         {
             var forbiddenDescriptions = restrictions
                 .Where(x => words.Any(word => x.Food.Name.Contains(word, StringComparison.OrdinalIgnoreCase)))

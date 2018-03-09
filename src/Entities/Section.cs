@@ -8,6 +8,6 @@ namespace Gerb.Telegram.Bot.Entities
         public string AllowedDescription { get; set; }
         public string ForbiddenDescription { get; set; }
         public ICollection<Restriction> Restrictions { get; set; }
-        public ICollection<Recommendation> Recomendations { get; set; }
+        public ICollection<Recommendation> Recommendations { get; set; }
     }
 }

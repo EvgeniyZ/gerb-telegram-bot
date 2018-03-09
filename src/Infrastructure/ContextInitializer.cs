@@ -19,7 +19,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
                     Name = "ХЛЕБ И МУЧНЫЕ ИЗДЕЛИЯ",
                     AllowedDescription = "Хлеб пшеничный вчерашней выпечки или подсушенный; сухой бисквит, печенье сухое. 1-2 раза в неделю хорошо выпеченные несдобные булочки, печеные пирожки с яблоками, отварным мясом или рыбой и яйцами, джемом, ватрушка с творогом.",
                     ForbiddenDescription = "Ржаной и любой свежий хлеб, изделия из сдобного и слоёного теста.",
-                    Recomendations = new List<Recommendation>
+                    Recommendations = new List<Recommendation>
                     {
                         new Recommendation
                         {
@@ -66,7 +66,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
                     Name = "ПЛОДЫ, СЛАДКИЕ БЛЮДА, СЛАДОСТИ",
                     AllowedDescription = "В протёртом, варёном и печёном виде сладкие ягоды и фрукты. Пюре, кисели, муссы, желе, компоты, сливочный крем, молочный кисель. Сахар, мёд, некислое варенье, зефир, пастила.",
                     ForbiddenDescription = "Кислые, недостаточно спелые, богатые клетчаткой фрукты и ягоды, непротёртые сухофрукты, шоколад, мороженое.",
-                    Recomendations = new List<Recommendation>
+                    Recommendations = new List<Recommendation>
                     {
                         new Recommendation
                         {
@@ -108,7 +108,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
                 {
                     restriction.Section = section;
                 }
-                foreach (var recomendation in section.Recomendations)
+                foreach (var recomendation in section.Recommendations)
                 {
                     recomendation.Section = section;
                 }
