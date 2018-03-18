@@ -18,6 +18,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         private readonly StomachUnclerDietContext _dietContext;
         private readonly ILogger<TextMessageProcessor> _logger;
         private const string Allowed = "Разрешается";
+        private const string NotAllowed = "Нельзя.";
         private const string Forbidden = "Исключают из диеты";
         private const string Empty = "Пустое сообщение";
         public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
@@ -53,7 +54,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                     });
                 }
 
-                return new TextProcessorResult(forbiddenContent);
+                return new TextProcessorResult(string.Join("\n", $"*{NotAllowed}.*{Forbidden}:\n*{forbiddenContent}"));
             }
             var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}",
                 $"*{Forbidden}:\n*{section.ForbiddenDescription}");
