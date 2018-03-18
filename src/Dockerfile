@@ -14,5 +14,5 @@ FROM microsoft/dotnet:runtime
 WORKDIR /app
 
 COPY --from=build-env /app/out ./
-CMD ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://*:$PORT dotnet Gerb.Telegram.Bot.dll
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet Gerb.Telegram.Bot.dll
 #ENTRYPOINT ["dotnet", "Gerb.Telegram.Bot.dll"]
