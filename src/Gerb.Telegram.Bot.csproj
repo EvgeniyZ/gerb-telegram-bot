@@ -10,6 +10,9 @@
     <PackageReference Include="Telegram.Bot" Version="14.0.0-beta-342" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
     <Content Include="appsettings.Production.json">
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>

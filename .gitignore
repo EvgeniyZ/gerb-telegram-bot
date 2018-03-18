@@ -1,5 +1,6 @@
-### App Settings ###
+### App Settings, Environment files ###
 *appsettings.*
+*.env
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and

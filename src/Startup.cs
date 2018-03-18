@@ -22,7 +22,7 @@ namespace Gerb.Telegram.Bot
 
             services.AddScoped<IUpdateService, UpdateService>();
             services.AddSingleton<IBotService, BotService>();
-            services.AddInfrastructure("");
+            services.AddInfrastructure(Configuration.GetConnectionString("Gerb"));
             services.AddMessageProcessors();
 
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));

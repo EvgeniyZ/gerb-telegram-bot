@@ -1,4 +1,5 @@
 using Gerb.Telegram.Bot.Entities;
+using Gerb.Telegram.Bot.Extensions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            UseSnakeCase(modelBuilder);
             modelBuilder.Entity<Food>(entity =>
             {
                 entity.ToTable("food");
@@ -42,9 +44,37 @@ namespace Gerb.Telegram.Bot.Infrastructure
                 entity.ToTable("section");
                 entity.HasKey(x => x.Id);
                 entity.HasIndex(x => x.Name).IsUnique();
-                entity.HasMany(x => x.Recommendations);
-                entity.HasMany(x => x.Restrictions);
             });
+        }
+
+        private static void UseSnakeCase(ModelBuilder builder)
+        {
+            foreach (var entity in builder.Model.GetEntityTypes())
+            {
+                // Replace table names
+                entity.Relational().TableName = entity.Relational().TableName.ToSnakeCase();
+
+                // Replace column names            
+                foreach (var property in entity.GetProperties())
+                {
+                    property.Relational().ColumnName = property.Name.ToSnakeCase();
+                }
+
+                foreach (var key in entity.GetKeys())
+                {
+                    key.Relational().Name = key.Relational().Name.ToSnakeCase();
+                }
+
+                foreach (var key in entity.GetForeignKeys())
+                {
+                    key.Relational().Name = key.Relational().Name.ToSnakeCase();
+                }
+
+                foreach (var index in entity.GetIndexes())
+                {
+                    index.Relational().Name = index.Relational().Name.ToSnakeCase();
+                }
+            }
         }
     }
 }

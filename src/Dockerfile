@@ -7,12 +7,12 @@ RUN dotnet restore
 
 # copy everything else and build
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Debug -o out
 
 # build runtime image
 FROM microsoft/dotnet:runtime
 WORKDIR /app
 
 COPY --from=build-env /app/out ./
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Gerb.Telegram.Bot.dll
+CMD ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://*:$PORT dotnet Gerb.Telegram.Bot.dll
 #ENTRYPOINT ["dotnet", "Gerb.Telegram.Bot.dll"]

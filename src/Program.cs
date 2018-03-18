@@ -12,7 +12,7 @@ namespace Gerb.Telegram.Bot
         {
             var host = BuildWebHost(args);
 
-            using(var scope = host.Services.CreateScope()) 
+            using (var scope = host.Services.CreateScope())
             {
                 try
                 {

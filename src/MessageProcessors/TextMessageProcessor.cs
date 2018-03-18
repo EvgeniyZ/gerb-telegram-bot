@@ -7,6 +7,7 @@ using Gerb.Telegram.Bot.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Gerb.Telegram.Bot.Shared;
+using Microsoft.Extensions.Logging;
 
 namespace Gerb.Telegram.Bot.MessageProcessors
 {
@@ -15,14 +16,16 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         private readonly string _invalidRussianCharacters = "[^а-яА-Я]";
         private readonly string _specialCharacters = "[,.?!]";
         private readonly StomachUnclerDietContext _dietContext;
+        private readonly ILogger<TextMessageProcessor> _logger;
         private const string Allowed = "Разрешается";
         private const string Forbidden = "Исключают из диеты";
         private const string Empty = "Пустое сообщение";
         public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
 
-        public TextMessageProcessor(StomachUnclerDietContext dietContext)
+        public TextMessageProcessor(StomachUnclerDietContext dietContext, ILogger<TextMessageProcessor> logger)
         {
             _dietContext = dietContext;
+            _logger = logger;
         }
 
         public async Task<TextProcessorResult> Process(string message)
@@ -31,12 +34,16 @@ namespace Gerb.Telegram.Bot.MessageProcessors
             {
                 return new TextProcessorResult(Empty);
             }
-            var sections = await _dietContext.Sections.ToListAsync();
+            var sections = await _dietContext.Sections
+                .Include(sect => sect.Restrictions)
+                .ThenInclude(restr => restr.Food)
+                .ToListAsync();
+            _logger.LogInformation($"Sections count is - {sections.Count}");
             var section = sections.FirstOrDefault(x => x.Name == message);
             if (section is null)
             {
                 var words = GetWords(message);
-                var forbiddenContent = GetForbiddenContent(words, sections.SelectMany(x => x.Restrictions));
+                var forbiddenContent = GetForbiddenContent(words, sections.SelectMany(x => x.Restrictions).ToList());
                 if (string.IsNullOrEmpty(forbiddenContent))
                 {
                     return new TextProcessorResult(Positive, new DietReplyMarkup
@@ -45,10 +52,12 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                         one_time_keyboard = true
                     });
                 }
+
                 return new TextProcessorResult(forbiddenContent);
             }
             var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}",
                 $"*{Forbidden}:\n*{section.ForbiddenDescription}");
+
             return new TextProcessorResult(content);
         }
 
@@ -56,6 +65,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         {
             var words = Regex.Replace(message, _specialCharacters, " ")
                 .Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
             return words
                 .Select(x => Regex.Replace(x, _invalidRussianCharacters, "")
                                   .Trim()
@@ -64,8 +74,9 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 .ToList();
         }
 
-        private string GetForbiddenContent(IEnumerable<string> words, IEnumerable<Restriction> restrictions)
+        private string GetForbiddenContent(List<string> words, List<Restriction> restrictions)
         {
+            _logger.LogInformation($"Restrictions count is - {restrictions.Count}");
             var forbiddenDescriptions = restrictions
                 .Where(x => words.Any(word => x.Food.Name.Contains(word, StringComparison.OrdinalIgnoreCase)))
                 .Select(x => x.Section.ForbiddenDescription);

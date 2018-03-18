@@ -1,17 +1,15 @@
-version: '3'
+version: "3"
 services:
   web:
-    build: .
+    build: 
+      context: ./src
     ports:
       - "5000:5000"
-    env_file: .env
+    env_file: web.env
     depends_on:
-      - db
-    volumes:
-      - ./src:/opt/app
-    working_dir: /opt/app
+      - "db"
   db:
     image: postgres:latest
-    env_file: .env
+    env_file: db.env
     ports:
       - "5432:5432"
