@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Gerb.Telegram.Bot.Entities;
+using Gerb.Telegram.Bot.Domain.Entities;
 
 namespace Gerb.Telegram.Bot.Infrastructure
 {

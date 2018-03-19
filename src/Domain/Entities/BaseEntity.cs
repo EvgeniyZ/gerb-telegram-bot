@@ -1,4 +1,4 @@
-namespace Gerb.Telegram.Bot.Entities
+namespace Gerb.Telegram.Bot.Domain.Entities
 {
     public abstract class BaseEntity
     {

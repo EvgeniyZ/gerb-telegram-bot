@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gerb.Telegram.Bot.Entities
+namespace Gerb.Telegram.Bot.Domain.Entities
 {
     public sealed class Food : BaseEntity
     {

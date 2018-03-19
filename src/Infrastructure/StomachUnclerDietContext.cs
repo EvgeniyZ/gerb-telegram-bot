@@ -1,4 +1,4 @@
-using Gerb.Telegram.Bot.Entities;
+using Gerb.Telegram.Bot.Domain.Entities;
 using Gerb.Telegram.Bot.Extensions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;

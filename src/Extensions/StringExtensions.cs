@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Gerb.Telegram.Bot.Extensions
@@ -13,6 +14,11 @@ namespace Gerb.Telegram.Bot.Extensions
 
             var startUnderscores = Regex.Match(input, @"^_+");
             return startUnderscores + Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+        }
+
+        public static bool Contains(this string source, string value, StringComparison comparison)
+        {
+            return source?.IndexOf(value, comparison) >= 0;
         }
     }
 }
