@@ -189,13 +189,6 @@ namespace Gerb.Telegram.Bot.Infrastructure
                         {
                             Food = new Food
                             {
-                                Name = "Молоко"
-                            }
-                        },
-                        new Recommendation
-                        {
-                            Food = new Food
-                            {
                                 Name = "Сливки"
                             }
                         },
