@@ -14,11 +14,6 @@ namespace Gerb.Telegram.Bot.MessageProcessors
     {
         private readonly StomachUnclerDietContext _dietContext;
         private readonly ILogger<TextMessageProcessor> _logger;
-        private const string Allowed = "Разрешается";
-        private const string NotAllowed = "Нельзя.";
-        private const string Forbidden = "Исключают из диеты";
-        private const string Empty = "Пустое сообщение";
-        public const string Positive = "Можно. Но лучше уточните в разделах диеты.";
 
         public TextMessageProcessor(StomachUnclerDietContext dietContext, ILogger<TextMessageProcessor> logger)
         {
@@ -30,7 +25,7 @@ namespace Gerb.Telegram.Bot.MessageProcessors
         {
             if (message.Length == 0)
             {
-                return new TextProcessorResult(Empty);
+                return new TextProcessorResult(AnswerMaker.GetEmptyAnswer());
             }
             var sections = await _dietContext.Sections
                 .Include(sect => sect.Restrictions)
@@ -46,19 +41,18 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 string forbiddenContent = DecisionMaker.GetForbiddenContent(words, restrictions);
                 if (string.IsNullOrEmpty(forbiddenContent))
                 {
-                    return new TextProcessorResult(Positive, new DietReplyMarkup
+                    return new TextProcessorResult(AnswerMaker.GetPositiveAnswer(), new DietReplyMarkup
                     {
                         keyboard = sections.Select(x => new List<string> { x.Name }).ToList(),
                         one_time_keyboard = true
                     });
                 }
 
-                return new TextProcessorResult(string.Join("\n", $"*{NotAllowed}. {Forbidden}:\n*{forbiddenContent}"));
+                return new TextProcessorResult(AnswerMaker.GetNegativeAnswer(forbiddenContent));
             }
-            var content = string.Join("\n", $"*{Allowed}:\n*{section.AllowedDescription}",
-                $"*{Forbidden}:\n*{section.ForbiddenDescription}");
 
-            return new TextProcessorResult(content);
+            return new TextProcessorResult(AnswerMaker.GetOverallAnswer(section.AllowedDescription,
+                section.ForbiddenDescription));
         }
     }
 }

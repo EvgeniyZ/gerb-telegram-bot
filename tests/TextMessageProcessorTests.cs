@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Gerb.Telegram.Bot.Domain;
 using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.MessageProcessors;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ namespace Gerb.Unit.Tests
                 var result = await textMessageProcessor.Process(message);
 
                 Assert.False(string.IsNullOrEmpty(result.Content));
-                Assert.NotEqual(TextMessageProcessor.Positive, result.Content);
+                Assert.NotEqual(AnswerMaker.Positive, result.Content);
             }
         }
 
@@ -55,7 +56,7 @@ namespace Gerb.Unit.Tests
                 var textMessageProcessor = new TextMessageProcessor(context, new NullLogger<TextMessageProcessor>());
                 var result = await textMessageProcessor.Process(message);
 
-                Assert.Equal(TextMessageProcessor.Positive, result.Content);
+                Assert.Equal(AnswerMaker.Positive, result.Content);
             }
         }
         public void Dispose()

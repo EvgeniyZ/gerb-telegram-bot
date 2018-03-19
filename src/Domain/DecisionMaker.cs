@@ -6,7 +6,7 @@ using Gerb.Telegram.Bot.Domain.Entities;
 
 namespace Gerb.Telegram.Bot.Domain
 {
-    public static class DecisionMaker 
+    public static class DecisionMaker
     {
         public static string GetForbiddenContent(List<string> words, List<Restriction> restrictions)
         {
