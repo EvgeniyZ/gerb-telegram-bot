@@ -7,7 +7,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
     {
         public static void AddInfrastructure(this IServiceCollection serviceCollection, string connectionString)
         {
-            serviceCollection.AddDbContext<StomachUnclerDietContext>(options => options.UseNpgsql(connectionString));
+            serviceCollection.AddDbContext<DietContext>(options => options.UseNpgsql(connectionString));
         }
     }
 }

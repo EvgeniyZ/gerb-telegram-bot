@@ -11,11 +11,11 @@ namespace Gerb.Unit.Tests
 {
     public class TextMessageProcessorTests : IDisposable
     {
-        private readonly DbContextOptions<StomachUnclerDietContext> _options;
+        private readonly DbContextOptions<DietContext> _options;
 
         public TextMessageProcessorTests()
         {
-            _options = new DbContextOptionsBuilder<StomachUnclerDietContext>()
+            _options = new DbContextOptionsBuilder<DietContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
         }
@@ -31,7 +31,7 @@ namespace Gerb.Unit.Tests
         //[InlineData("Can I eat a chocolate?")]
         public async Task Should_Call_DietDecisionMaker_Forbid_Chocolate(string message)
         {
-            using (var context = new StomachUnclerDietContext(_options))
+            using (var context = new DietContext(_options))
             {
                 ContextInitializer.Initialize(context);
                 var textMessageProcessor = new TextMessageProcessor(context, new NullLogger<TextMessageProcessor>());
@@ -39,7 +39,6 @@ namespace Gerb.Unit.Tests
                 var result = await textMessageProcessor.Process(message);
 
                 Assert.False(string.IsNullOrEmpty(result.Content));
-                Assert.NotEqual(AnswerMaker.Positive, result.Content);
             }
         }
 
@@ -50,18 +49,18 @@ namespace Gerb.Unit.Tests
         [InlineData("бананы")]
         public async Task Should_Call_DietDecisionMaker_Allow_Banana(string message)
         {
-            using (var context = new StomachUnclerDietContext(_options))
+            using (var context = new DietContext(_options))
             {
                 ContextInitializer.Initialize(context);
                 var textMessageProcessor = new TextMessageProcessor(context, new NullLogger<TextMessageProcessor>());
                 var result = await textMessageProcessor.Process(message);
 
-                Assert.Equal(AnswerMaker.Positive, result.Content);
+                Assert.False(string.IsNullOrEmpty(result.Content));
             }
         }
         public void Dispose()
         {
-            using (var context = new StomachUnclerDietContext(_options))
+            using (var context = new DietContext(_options))
             {
                 context.Database.EnsureDeleted();
             }

@@ -16,7 +16,7 @@ namespace Gerb.Telegram.Bot
             {
                 try
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<StomachUnclerDietContext>();
+                    var context = scope.ServiceProvider.GetRequiredService<DietContext>();
                     ContextInitializer.Initialize(context);
                 }
                 catch (System.Exception ex)

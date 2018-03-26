@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gerb.Telegram.Bot.Infrastructure
 {
-    public class StomachUnclerDietContext : DbContext
+    public class DietContext : DbContext
     {
-        public StomachUnclerDietContext(DbContextOptions options) : base(options)
+        public DietContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -54,7 +54,7 @@ namespace Gerb.Telegram.Bot.Infrastructure
                 // Replace table names
                 entity.Relational().TableName = entity.Relational().TableName.ToSnakeCase();
 
-                // Replace column names            
+                // Replace column names
                 foreach (var property in entity.GetProperties())
                 {
                     property.Relational().ColumnName = property.Name.ToSnakeCase();

@@ -17,5 +17,13 @@ namespace Gerb.Telegram.Bot.Domain
             return forbiddenDescriptions.Any() ? string.Join(".", forbiddenDescriptions) : "";
         }
 
+        public static string GetAllowedContent(List<string> words, List<Recommendation> recommendations) 
+        {
+            var allowedDescriptions = recommendations
+                .Where(x => words.Any(word => x.Food.Name.Contains(word, StringComparison.OrdinalIgnoreCase)))
+                .Select(x => x.Section.AllowedDescription);
+            
+            return allowedDescriptions.Any() ? string.Join(".", allowedDescriptions) : "";
+        }
     }
 }

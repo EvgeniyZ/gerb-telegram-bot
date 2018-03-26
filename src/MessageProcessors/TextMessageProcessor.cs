@@ -12,10 +12,10 @@ namespace Gerb.Telegram.Bot.MessageProcessors
 {
     public class TextMessageProcessor
     {
-        private readonly StomachUnclerDietContext _dietContext;
+        private readonly DietContext _dietContext;
         private readonly ILogger<TextMessageProcessor> _logger;
 
-        public TextMessageProcessor(StomachUnclerDietContext dietContext, ILogger<TextMessageProcessor> logger)
+        public TextMessageProcessor(DietContext dietContext, ILogger<TextMessageProcessor> logger)
         {
             _dietContext = dietContext;
             _logger = logger;
@@ -41,7 +41,14 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 string forbiddenContent = DecisionMaker.GetForbiddenContent(words, restrictions);
                 if (string.IsNullOrEmpty(forbiddenContent))
                 {
-                    return new TextProcessorResult(AnswerMaker.GetPositiveAnswer(), new DietReplyMarkup
+                    var recommendations = sections.SelectMany(x => x.Recommendations).ToList();
+                    _logger.LogInformation($"Recommendations count is - {recommendations.Count}");
+                    string allowedContent = DecisionMaker.GetAllowedContent(words, recommendations);
+                    if (string.IsNullOrEmpty(allowedContent)) 
+                    {
+                        //suggest user to decide allowed\forbidden and section
+                    }
+                    return new TextProcessorResult(AnswerMaker.GetPositiveAnswer(allowedContent), new DietReplyMarkup
                     {
                         keyboard = sections.Select(x => new List<string> { x.Name }).ToList(),
                         one_time_keyboard = true
