@@ -18,11 +18,13 @@ namespace Gerb.Telegram.Bot.Services
         public async Task<List<string>> GetKeywords(string question)
         {
             var formattedQuestion = question.Trim().ToLower();
-            if (!_cache.TryGetValue(question, out string cachedString)) 
+            if (!_cache.TryGetValue(question, out CachedAnswer cachedAnswer)) 
             {
                 // call remote API to extract key phrases
+                // save result to cache
+                // send message to queue
             }
-            return JsonConvert.DeserializeObject<List<string>>(cachedString);
+            return cachedAnswer.Keywords;
         }
     }
 }
