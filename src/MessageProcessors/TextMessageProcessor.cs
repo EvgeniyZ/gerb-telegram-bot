@@ -31,20 +31,22 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 .Include(sect => sect.Restrictions)
                 .ThenInclude(restr => restr.Food)
                 .ToListAsync();
-            _logger.LogInformation($"Sections count is - {sections.Count}");
+            _logger.LogDebug($"Sections count is - {sections.Count}");
             var section = sections.FirstOrDefault(x => x.Name == message);
             if (section is null)
             {
                 List<string> words = MessageParser.GetWords(message);
                 var restrictions = sections.SelectMany(x => x.Restrictions).ToList();
-                _logger.LogInformation($"Restrictions count is - {restrictions.Count}");
+                _logger.LogDebug($"Restrictions count is - {restrictions.Count}");
                 string forbiddenContent = DecisionMaker.GetForbiddenContent(words, restrictions);
                 if (string.IsNullOrEmpty(forbiddenContent))
                 {
-                    var recommendations = sections.SelectMany(x => x.Recommendations).ToList();
-                    _logger.LogInformation($"Recommendations count is - {recommendations.Count}");
+                    var recommendations = sections
+                        .SelectMany(x => x.Recommendations)
+                        .ToList();
+                    _logger.LogDebug($"Recommendations count is - {recommendations.Count}");
                     string allowedContent = DecisionMaker.GetAllowedContent(words, recommendations);
-                    if (string.IsNullOrEmpty(allowedContent)) 
+                    if (string.IsNullOrEmpty(allowedContent))
                     {
                         //suggest user to decide allowed\forbidden and section
                     }
@@ -54,10 +56,8 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                         one_time_keyboard = true
                     });
                 }
-
                 return new TextProcessorResult(AnswerMaker.GetNegativeAnswer(forbiddenContent));
             }
-
             return new TextProcessorResult(AnswerMaker.GetOverallAnswer(section.AllowedDescription,
                 section.ForbiddenDescription));
         }
