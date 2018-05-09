@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Gerb.Telegram.Bot.Services;
 using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.MessageProcessors;
+using System;
 
 namespace Gerb.Telegram.Bot
 {
@@ -20,8 +21,8 @@ namespace Gerb.Telegram.Bot
         {
             services.AddMvc();
 
-            services.AddScoped<IUpdateService, UpdateService>();
-            services.AddSingleton<IBotService, BotService>();
+            services.AddServices();
+            services.AddTextAnalysisApi(Environment.GetEnvironmentVariable("TextAnalysisAPIUrl"), Environment.GetEnvironmentVariable("TextAnalysisAPIKey"));
             services.AddInfrastructure(Configuration.GetConnectionString("Gerb"));
             services.AddMessageProcessors();
 
