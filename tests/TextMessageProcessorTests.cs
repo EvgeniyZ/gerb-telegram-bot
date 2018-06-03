@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Gerb.Telegram.Bot.Domain;
 using Gerb.Telegram.Bot.Infrastructure;
-using Gerb.Telegram.Bot.MessageProcessors;
+using Gerb.Telegram.Bot.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

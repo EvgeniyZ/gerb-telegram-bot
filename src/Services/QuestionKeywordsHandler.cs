@@ -13,7 +13,7 @@ namespace Gerb.Telegram.Bot.Services
 
         public QuestionKeywordsHandler(QuestionKeywordRx questionKeywordRx, DietContext dietContext)
         {
-            _questionKeywordRxSubscription = questionKeywordRx.ObserveQuestionKeywords.Subscribe(this.OnReceive);
+            //_questionKeywordRxSubscription = questionKeywordRx.ObserveQuestionKeywords.Subscribe(this.OnReceive);
             _dietContext = dietContext;
         }
         public void Dispose()

@@ -11,9 +11,10 @@ namespace Gerb.Telegram.Bot.Services
             serviceCollection.AddScoped<IUpdateService, UpdateService>();
             serviceCollection.AddScoped<KeywordsService>();
             serviceCollection.AddSingleton<QuestionKeywordsHandler>();
+            serviceCollection.AddScoped<TextMessageProcessor>();
         }
 
-        public static void AddTextAnalysisApi(this IServiceCollection serviceCollection, string url, string apiKey) 
+        public static void AddTextAnalysisApi(this IServiceCollection serviceCollection, string url, string apiKey)
         {
             serviceCollection.Configure<TextAnalyticsApiOptions>(options => {
                 options.Url = url;
