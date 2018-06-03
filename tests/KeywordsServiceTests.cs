@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Gerb.Telegram.Bot.Domain;
-using Gerb.Telegram.Bot.Infrastructure;
 using Gerb.Telegram.Bot.Infrastructure.Remote;
 using Gerb.Telegram.Bot.Services;
 using Microsoft.Extensions.Caching.Distributed;
@@ -23,7 +21,7 @@ namespace Gerb.Unit.Tests
             var cache = new MemoryCache(new MemoryCacheOptions());
             cache.Set(question, new List<string> { "мороженое" });
             var mockTextProcessingApi = new Mock<ITextProcessingApi>();
-            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object, new QuestionKeywordRx());
+            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object);
 
             var keywords = await keywordsService.GetKeywords(question);
 
@@ -37,7 +35,7 @@ namespace Gerb.Unit.Tests
             var cache = new MemoryCache(new MemoryCacheOptions());
             cache.Set(question, new List<string> { "мороженое" });
             var mockTextProcessingApi = new Mock<ITextProcessingApi>();
-            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object, new QuestionKeywordRx());
+            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object);
 
             var keywords = await keywordsService.GetKeywords(question);
 
@@ -53,7 +51,7 @@ namespace Gerb.Unit.Tests
             mockTextProcessingApi
                 .Setup(x => x.GetKeywords(question))
                 .ReturnsAsync(new List<string> { "мороженое" });
-            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object, new QuestionKeywordRx());
+            var keywordsService = new KeywordsService(cache, mockTextProcessingApi.Object);
 
             var keywords = await keywordsService.GetKeywords(question);
 

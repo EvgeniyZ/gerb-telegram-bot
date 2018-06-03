@@ -15,7 +15,6 @@ namespace Gerb.Telegram.Bot.Infrastructure
         public DbSet<Recommendation> Recomendations { get; set; }
         public DbSet<Restriction> Restrictions { get; set; }
         public DbSet<Section> Sections { get; set; }
-        public DbSet<QuestionKeyword> QuestionKeywords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
