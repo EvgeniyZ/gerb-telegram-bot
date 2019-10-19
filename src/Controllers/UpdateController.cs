@@ -15,7 +15,6 @@ namespace Gerb.Telegram.Bot.Controllers
             _updateService = updateService;
         }
 
-        // POST api/update
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Update update)
         {

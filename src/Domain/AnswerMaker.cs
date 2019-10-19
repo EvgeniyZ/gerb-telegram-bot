@@ -6,7 +6,7 @@ namespace Gerb.Telegram.Bot.Domain
         private const string NotAllowed = "Нельзя.";
         private const string Forbidden = "Исключают из диеты";
         private const string Empty = "Пустое сообщение";
-        public const string Positive = "Можно.";
+        private const string Positive = "Можно.";
 
         public static string GetEmptyAnswer()
         {

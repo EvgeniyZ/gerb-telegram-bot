@@ -28,6 +28,8 @@ namespace Gerb.Telegram.Bot.MessageProcessors
                 return new TextProcessorResult(AnswerMaker.GetEmptyAnswer());
             }
             var sections = await _dietContext.Sections
+                .Include(sect => sect.Recommendations)
+                .ThenInclude(recom => recom.Food)
                 .Include(sect => sect.Restrictions)
                 .ThenInclude(restr => restr.Food)
                 .ToListAsync();
