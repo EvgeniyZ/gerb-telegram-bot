@@ -3,3 +3,4 @@ docker build -t gerb-telegram-bot ./src
 docker tag gerb-telegram-bot registry.heroku.com/gerb-telegram-bot/web
 heroku container:login
 docker push registry.heroku.com/gerb-telegram-bot/web
+heroku container:release web -a gerb-telegram-bot
